@@ -1,0 +1,39 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:5.6
+    container_name: mysql
+    volumes:
+      - ./mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d/
+      - ./mysql/sql:/opt/sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=abcd1234
+      - TZ=Asia/Shanghai
+#    ports:
+#      - 3306:3306
+    restart: always
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  nginx:
+    image: nginx
+    container_name: nginx
+    restart: always
+    volumes:
+      - /etc/timezone:/etc/timezone
+      - /etc/localtime:/etc/localtime
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/dist:/var/www/dist
+    ports:
+      - 80:80
+
+  java:
+    image: openjdk:8
+    container_name: java
+    restart: always
+    volumes:
+      - ./java/back-1.0-SNAPSHOT.jar:/opt/back-1.0-SNAPSHOT.jar
+    command: java -Djava.awt.headless=true -jar /opt/back-1.0-SNAPSHOT.jar 
+    depends_on:
+      - mysql
