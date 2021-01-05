@@ -34,7 +34,6 @@ services:
     restart: always
     volumes:
       - ./java/javaApplication.jar:/opt/javaApplication.jar
-    #-Djava.awt.headless=true 是为了验证码生成功能能够正常工作
-    command: java -Djava.awt.headless=true -jar /opt/javaApplication.jar
+    command: java -jar /opt/javaApplication.jar
     depends_on:
       - mysql
